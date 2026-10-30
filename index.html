@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RSVP Reader</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RSVP">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#121214">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <button id="btnLibrary" class="chip">Library</button>
+  <div id="title">RSVP Reader</div>
+  <div>
+    <button id="btnStats" class="chip">Stats</button>
+    <button id="btnSettings" class="chip">Settings</button>
+  </div>
+</header>
+
+<main id="stage">
+  <div id="headline">HOW FAST CAN YOU READ?</div>
+  <div id="reader">
+    <div class="guide top"><i></i></div>
+    <div id="word"><div id="wlc"><span id="gl" class="g"></span><span id="wl"></span></div><span id="wp"></span><div id="wrc"><span id="wr"></span><span id="gr" class="g"></span></div></div>
+    <div class="guide bottom"><i></i></div>
+  </div>
+  <div id="wpmLabel"><span id="wpmVal" title="Click to type a value">300</span> WPM</div>
+  <div id="hint">Press &amp; hold anywhere (or hold Space) to read. Release to stop.</div>
+  <div id="context"></div>
+</main>
+
+<footer id="bottombar">
+  <input id="progress" type="range" min="0" max="1000" value="0" aria-label="Progress">
+  <div class="row">
+    <span id="progText">0 / 0</span>
+    <input id="wpm" type="range" min="100" max="1000" step="25" value="300" aria-label="Words per minute">
+    <span id="eta"></span>
+  </div>
+</footer>
+
+<section id="pLibrary" class="panel" hidden>
+  <div class="card">
+    <h2>Library <button class="close" data-close>×</button></h2>
+    <textarea id="pasteBox" placeholder="Paste text here…"></textarea>
+    <div class="btns">
+      <button id="btnPaste" class="primary">Read pasted text</button>
+      <label class="btn">Open .txt / .md / .html / .epub<input id="fileIn" type="file" accept=".txt,.epub,.md,.html,.htm,text/plain,application/epub+zip" hidden></label>
+    </div>
+    <div class="btns"><input id="urlIn" type="url" placeholder="https://… (page must allow CORS)"><button id="btnUrl" class="btn">Fetch URL</button></div>
+    <ul id="libList"></ul>
+    <h3 id="chapHead" hidden>Chapters</h3>
+    <ul id="chapList"></ul>
+  </div>
+</section>
+
+<section id="pSettings" class="panel" hidden>
+  <div class="card">
+    <h2>Settings <button class="close" data-close>×</button></h2>
+    <label>Smart pauses (punctuation / long words)<input type="checkbox" id="sSmart"></label>
+    <label>Ramp-up when pressing<input type="checkbox" id="sRamp"></label>
+    <label>Words per flash
+      <select id="sChunk"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+    <label>Theme
+      <select id="sTheme"><option value="dark">Dark</option><option value="light">Light</option><option value="sepia">Sepia</option><option value="peach">Irlen peach</option><option value="mint">Irlen mint</option><option value="parchment">Irlen parchment</option></select></label>
+    <label>Font
+      <select id="sFont"><option value="mono">Monospace</option><option value="serif">Serif</option><option value="sans">Sans</option><option value="dyslexia">Dyslexia-friendly</option></select></label>
+    <label>Font size <input type="range" id="sSize" min="28" max="120" step="2"></label>
+    <label>Highlight color
+      <span id="swatches">
+        <button type="button" class="sw" data-c="#ff6a00" style="background:#ff6a00" aria-label="Orange"></button>
+        <button type="button" class="sw" data-c="#5fb97f" style="background:#5fb97f" aria-label="Soft green"></button>
+        <button type="button" class="sw" data-c="#5aa9e6" style="background:#5aa9e6" aria-label="Sky blue"></button>
+        <button type="button" class="sw" data-c="#b39ddb" style="background:#b39ddb" aria-label="Lavender"></button>
+        <input type="color" id="sAccent" aria-label="Custom color">
+      </span></label>
+    <label>Show surrounding words (ghost)<input type="checkbox" id="sGhost"></label>
+    <label>Show text context when paused<input type="checkbox" id="sContext"></label>
+    <label>Focus mode (hide controls while reading) <small>key F</small><input type="checkbox" id="sFocus"></label>
+    <label>Click sound per word<input type="checkbox" id="sClick"></label>
+    <label>Brown noise while reading<input type="checkbox" id="sNoise"></label>
+    <label>Eye-break reminder (20-20-20)<input type="checkbox" id="sEye"></label>
+    <label>Daily goal (words) <input type="number" id="sGoal" min="0" step="100" style="width:90px"></label>
+    <label>Comprehension quiz
+      <select id="sQuiz"><option value="0">Off</option><option value="end">At end of text</option><option value="500">Every 500 words</option><option value="1000">Every 1000 words</option></select></label>
+    <div class="btns"><button id="btnExport" class="btn">Export backup</button>
+      <label class="btn">Import backup<input id="importIn" type="file" accept=".json,application/json" hidden></label></div>
+    <div class="muted">Keys: Space hold = read · ←/→ sentence · Shift+←/→ 5 words · PgUp/PgDn 100 words · ↑/↓ WPM · +/−/0 font size · F focus · R restart</div>
+  </div>
+</section>
+
+<section id="pStats" class="panel" hidden>
+  <div class="card">
+    <h2>Stats <button class="close" data-close>×</button></h2>
+    <div id="statGrid"></div>
+    <svg id="chart" viewBox="0 0 280 100" preserveAspectRatio="none"></svg>
+    <div class="muted">Words read, last 14 days</div>
+    <div id="goalWrap"><div id="goalBar"><i></i></div><div class="muted" id="goalText"></div></div>
+    <h3>Recent sessions</h3>
+    <ul id="sessList"></ul>
+  </div>
+</section>
+
+<section id="pQuiz" class="panel" hidden>
+  <div class="card">
+    <h2>Quick check</h2>
+    <div id="quizBody"></div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
