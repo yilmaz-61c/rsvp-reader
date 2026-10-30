@@ -54,7 +54,21 @@ function render(str) {
   $('wl').textContent = l;
   $('wp').textContent = p;
   $('wr').textContent = r;
+  fitWord();
 }
+
+// shrink the word so each side of the pivot fits on screen (long words on narrow phones)
+function fitWord() {
+  const w = $('word');
+  w.style.fontSize = '';
+  const half = (w.clientWidth - $('wp').offsetWidth) / 2 - 10;
+  const need = Math.max($('wl').offsetWidth, $('wr').offsetWidth);
+  if (need > half && half > 0) {
+    const base = parseFloat(getComputedStyle(w).fontSize);
+    w.style.fontSize = Math.max(base * 0.2, (base * half) / need) + 'px';
+  }
+}
+window.addEventListener('resize', () => { if (doc.words.length) fitWord(); });
 
 // ---------- tokenizer ----------
 const doc = { id: null, title: '', words: [], paraEnd: null, text: '' };

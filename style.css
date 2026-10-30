@@ -33,8 +33,8 @@ button, .btn, select, input { font: inherit; color: inherit; }
 #reader { width: 100%; position: relative; padding: 18px 0; }
 #word { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); font: 500 var(--size)/1.2 var(--font); white-space: pre; align-items: baseline; }
 #wlc, #wrc { display: flex; align-items: baseline; overflow: hidden; }
-#wlc { justify-content: flex-end; -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%); mask-image: linear-gradient(90deg, transparent, #000 35%); }
-#wrc { justify-content: flex-start; -webkit-mask-image: linear-gradient(270deg, transparent, #000 35%); mask-image: linear-gradient(270deg, transparent, #000 35%); }
+#wlc { justify-content: flex-end; }
+#wrc { justify-content: flex-start; }
 .g { opacity: .2; font-size: .8em; }
 #gl { margin-right: .5ch; } #gr { margin-left: .5ch; }
 #wp { color: var(--accent); }
